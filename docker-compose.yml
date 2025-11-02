@@ -1,3 +1,6 @@
+# Development setup - PostgreSQL only
+# Run the Next.js app locally with: bun run dev
+
 services:
   postgres:
     image: postgres:18-alpine
@@ -16,37 +19,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: scifeed-app
-    restart: unless-stopped
-    ports:
-      - "3000:3000"
-    environment:
-      # Database
-      DATABASE_URL: postgresql://scifeed:scifeed_dev_password@postgres:5432/scifeed
-
-      # Better Auth
-      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}
-      BETTER_AUTH_URL: http://localhost:3000
-      NEXT_PUBLIC_APP_URL: http://localhost:3000
-
-      # OAuth (optional)
-      GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID:-}
-      GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET:-}
-      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
-      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
-    depends_on:
-      postgres:
-        condition: service_healthy
-    volumes:
-      # Mount for hot reload during development (optional)
-      - ./app:/app/app
-      - ./components:/app/components
-      - ./lib:/app/lib
 
 volumes:
   postgres_data:
